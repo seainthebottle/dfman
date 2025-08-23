@@ -199,17 +199,41 @@ class GraphicsView(QGraphicsView):
         else:
             super().mouseReleaseEvent(event)
 
+    def mouseMoveEvent(self, event):
+        if self._dragging and self._last_mouse_pos:
+            # 화면 이동량 계산
+            delta = event.position().toPoint() - self._last_mouse_pos
+            self._last_mouse_pos = event.position().toPoint()
+
+            # 스크롤바 값 갱신 (scale 영향 없음)
+            self.horizontalScrollBar().setValue(
+                self.horizontalScrollBar().value() - delta.x()
+            )
+            self.verticalScrollBar().setValue(
+                self.verticalScrollBar().value() - delta.y()
+            )
+        else:
+            super().mouseMoveEvent(event)
+
 
     # -----------------------
     # 줌 (마우스 휠 + Ctrl)
     # -----------------------
     def wheelEvent(self, event):
         if event.modifiers() & Qt.ControlModifier:
+            # ✅ Ctrl + 휠은 줌
             if event.angleDelta().y() > 0:
                 self.zoom_in()
             else:
                 self.zoom_out()
+        elif event.modifiers() & Qt.ShiftModifier:
+            # ✅ Shift + 휠 → 수평 스크롤 직접 제어 (속도 줄임)
+            delta_x = event.angleDelta().y() / 8    # 기본 단위는 1단계 = 15°, 여기서는 1/8로 줄임
+            self.horizontalScrollBar().setValue(
+                self.horizontalScrollBar().value() - delta_x
+            )
         else:
+            # 기본 세로 스크롤
             super().wheelEvent(event)
 
     def zoom_in(self):
