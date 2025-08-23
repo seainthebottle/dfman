@@ -228,9 +228,13 @@ class GraphicsView(QGraphicsView):
                 self.zoom_out()
         elif event.modifiers() & Qt.ShiftModifier:
             # ✅ Shift + 휠 → 수평 스크롤 직접 제어 (속도 줄임)
-            delta_x = event.angleDelta().y() / 8    # 기본 단위는 1단계 = 15°, 여기서는 1/8로 줄임
+            delta_x = event.angleDelta().y() / 4    # 기본 단위는 1단계 = 15°, 여기서는 1/4로 줄임 
             self.horizontalScrollBar().setValue(
                 self.horizontalScrollBar().value() - delta_x
+            )
+            delta_y = event.angleDelta().x() / 4    # 기본 단위는 1단계 = 15°, 여기서는 1/2로 줄임
+            self.verticalScrollBar().setValue(
+                self.verticalScrollBar().value() - delta_y
             )
         else:
             # 기본 세로 스크롤
