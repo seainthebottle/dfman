@@ -2,10 +2,10 @@
     "version": "2.0.0",
     "tasks": [
       {
-        "label": "Run MainWindow",
+        "label": "Run main program",
         "type": "shell",
         "command": "python",
-        "args": ["${workspaceFolder}/dfman.py"],
+        "args": ["${workspaceFolder}/main.py"],
         "group": {
           "kind": "build",
           "isDefault": true
