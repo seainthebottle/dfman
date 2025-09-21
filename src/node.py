@@ -74,5 +74,6 @@ class CircleNode(QGraphicsEllipseItem):
                    scene=scene,
                    mainwindow=mainwindow)
         node.name = data["name"]
+        node.label.setPlainText(data["name"])  # 화면에 표시되는 텍스트도 업데이트
         node.setPos(data["position"]["x"], data["position"]["y"])
         return node

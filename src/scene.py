@@ -4,8 +4,8 @@ from PySide6.QtCore import Qt
 from .node import CircleNode
 from .connection import ConnectionLineObj
 
-
 class CustomScene(QGraphicsScene):
+
     def __init__(self, mainwindow):
         super().__init__()
         self.mainwindow = mainwindow

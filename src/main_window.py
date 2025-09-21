@@ -1,7 +1,7 @@
 import json
 from PySide6.QtWidgets import (
     QMainWindow, QPushButton, QVBoxLayout, QWidget, QHBoxLayout,
-    QFileDialog, QMessageBox
+    QFileDialog, QMessageBox, QInputDialog
 )
 from PySide6.QtCore import QPointF, Qt
 from PySide6.QtGui import QPen
@@ -69,6 +69,17 @@ class MainWindow(QMainWindow):
         )
         self.temp_line.setAcceptedMouseButtons(Qt.NoButton)
 
+    def rename_node(self, node):
+        """
+        노드 이름 변경 함수
+        """
+        new_name, ok = QInputDialog.getText(self, "Rename Node", "Enter new name:", text=node.name)
+        if ok and new_name:
+            node.name = new_name
+            node.label.setPlainText(new_name)  # 화면에 표시되는 텍스트도 업데이트
+            node.update_label_position()  # 텍스트 위치 재조정
+            self.scene.update() # 노드 이름 변경 후 씬 업데이트
+
     def default_func(self):
         return """def main(*args):
     import pandas as pd
@@ -122,6 +133,7 @@ class MainWindow(QMainWindow):
             with open(file_path, 'r', encoding='utf-8') as f:
                 flow_data = json.load(f)
 
+            # 노드 아이디 맵핑
             node_id_map = {}
             for node_data in flow_data["nodes"]:
                 node = CircleNode.from_json(node_data, self.scene, self)
@@ -129,6 +141,7 @@ class MainWindow(QMainWindow):
                 self.nodes.append(node)
                 node_id_map[node_data["node_id"]] = node
 
+            # 연결 설정
             for conn_data in flow_data["connections"]:
                 start_node = node_id_map.get(conn_data["start_node_id"])
                 end_node = node_id_map.get(conn_data["end_node_id"])
@@ -137,6 +150,7 @@ class MainWindow(QMainWindow):
                     end_node.inputs.append(start_node)
                     ConnectionLineObj(start_node, end_node, self.scene)
 
+            # 씬 정보 설정
             if "scene_info" in flow_data:
                 scene_rect = flow_data["scene_info"]["scene_rect"]
                 self.scene.setSceneRect(scene_rect["x"], scene_rect["y"],

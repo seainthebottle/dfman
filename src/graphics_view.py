@@ -70,6 +70,7 @@ class GraphicsView(QGraphicsView):
             self.scale(0.8, 0.8)
             self.scale_factor *= 0.8
 
+    # 컨텍스트 메뉴 처리
     def contextMenuEvent(self, event):
         scene_pos = self.mapToScene(event.pos())
         item = self.itemAt(event.pos())
@@ -78,7 +79,14 @@ class GraphicsView(QGraphicsView):
             action_connect = QAction("Start Connection", menu)
             action_connect.triggered.connect(lambda: self.mainwindow.start_connection(item))
             menu.addAction(action_connect)
+
+            # 노드명 변경 메뉴 추가
+            action_rename = QAction("Rename Node", menu)
+            action_rename.triggered.connect(lambda: self.mainwindow.rename_node(item))
+            menu.addAction(action_rename)
+
             menu.exec(event.globalPos())
+
         else:
             menu = QMenu(self)
             action_add = QAction("Add Circle", menu)
